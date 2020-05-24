@@ -8,10 +8,9 @@ import time
 import tkinter as tk
 import tkinter.filedialog
 
-#from PIL import Image
-# import numpy.random.common
-# import numpy.random.bounded_integers
-# import numpy.random.entropy
+import numpy.random.common
+import numpy.random.bounded_integers
+import numpy.random.entropy
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
@@ -78,6 +77,9 @@ raw_data['Permalink']=np.nan
 raw_data['Image Hash']=np.nan
 raw_data['Ad Name']=np.nan
 raw_data['Ad Set Name']=np.nan
+raw_data['Attribution Spec']=np.nan
+
+
 
 print('data clean success')
 print('choose your creative')
@@ -162,14 +164,17 @@ else:
         new_data['Video File Name'][0:len(files)]=files
         #广告
         new_data['Ad Name'][0:len(files)]=files
-        new_data['Ad Set Name'][0:len(files)]=files
+        #new_data['Ad Set Name'][0:len(files)]=files
         
         # campaign命名 以row_num
         for f_i in range(math.ceil(len(files)/row_num)):
             ad_sut=1
             new_data['Campaign Name']=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
             ad_sut=ad_sut+1
-            
+        
+        # 一个广告组一个广告的时候，广告组赋值=广告name
+        if ad_num==adset_num:
+            new_data['Ad Set Name']=new_data['Ad Name']
 
         new_data=new_data.head(len(files))
     else:
@@ -185,11 +190,19 @@ else:
         # 粘贴文本
         new_data['image'][0:len(files)]=files
 
+        #广告
+        new_data['Ad Name'][0:len(files)]=files
+        #new_data['Ad Set Name'][0:len(files)]=files
+
         # campaign命名 以row_num
         for f_i in range(math.ceil(len(files)/row_num)):
             ad_sut=1
             new_data['Campaign Name']=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
             ad_sut=ad_sut+1
+
+        # 一个广告组一个广告的时候，广告组赋值=广告name
+        if ad_num==adset_num:
+            new_data['Ad Set Name']=new_data['Ad Name']
 
 
         new_data=new_data.head(len(files))
