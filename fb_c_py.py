@@ -167,7 +167,7 @@ else:
         # campaign命名 以row_num
         for f_i in range(math.ceil(len(files)/row_num)):
             ad_sut=1
-            new_data['Campaign Name'][f_i*row_num:(f_i+1)*row_num]=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
+            new_data['Campaign Name']=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
             ad_sut=ad_sut+1
             
 
@@ -188,7 +188,7 @@ else:
         # campaign命名 以row_num
         for f_i in range(math.ceil(len(files)/row_num)):
             ad_sut=1
-            new_data['Campaign Name'][raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
+            new_data['Campaign Name']=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
             ad_sut=ad_sut+1
 
 
