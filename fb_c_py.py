@@ -17,9 +17,19 @@ from pandas import DataFrame
 
 # campign类型判断
 text1='''
-Plase input num:
-1. campaign the same creative
+Plase input num(1 or 2):
+1. campaign the same creative       
+    Tips:   ad name = creative name, 
+            adset name = old adset name + creative name,
+            campagin name = old campagin name + creative name 
+
 2. campaign mix creative
+    Tips:   ad name = creative name, 
+            when one adset hanve one ad:
+                adset name = old adset name + creative name,
+            other:
+                adset name = old adset name
+            campagin name = old campagin name + 1,2,3......
 
 next step:Choose creative format
 '''
@@ -30,8 +40,8 @@ while re.findall('^[1-2]$',cam_tye)==[]:
     
 # 素材类型判断
 text2='''
-Plase Choose creative format:
-1. Video
+Plase Choose creative format(1 or 2):
+1. Video 
 2. Image
 
 next step:Choose template
@@ -75,8 +85,8 @@ raw_data['Preview Link']=np.nan
 raw_data['Instagram Preview Link']=np.nan
 raw_data['Permalink']=np.nan
 raw_data['Image Hash']=np.nan
-raw_data['Ad Name']=np.nan
-raw_data['Ad Set Name']=np.nan
+#raw_data['Ad Name']=np.nan
+#raw_data['Ad Set Name']=np.nan
 raw_data['Attribution Spec']=np.nan
 
 
@@ -104,24 +114,19 @@ if cam_tye=='1':
             
         # Creative Type 赋值
         new_data['Creative Type']='Video Page Post Ad'
-        # 粘贴文本
         
         for file_index in range(len(files)):
+            # creative name 每step行数 = file
             new_data['Video File Name'][row_num*file_index:row_num*(file_index+1)]=files[file_index]
-            #广告命名 以原始行数分命名
-            for f_i in range(row_num):
-                ad_sut=1
-                new_data['Ad Name'][file_index*row_num+f_i]=files[file_index]+'_'+str(ad_sut)
-                ad_sut=ad_sut+1
-            #广告组命名 以原始组数分命名    adset_num & ad_num
-            for f_i in range(adset_num):
-                ad_sut=1
-                new_data['Ad Set Name'][f_i*ad_num:(f_i+1)*ad_num]=files[file_index]+'_'+str(ad_sut)
-                ad_sut=ad_sut+1
-            # campaign命名 以行数命名   row_num
-            for f_i in range(row_num):
-                new_data['Campaign Name'][file_index*row_num+f_i] = raw_data['Campaign Name'][0]+'_'+files[file_index]
-            
+
+            # campaign name= oldcampaign name + creatvie name
+            new_data['Campaign Name'][row_num*file_index:row_num*(file_index+1)]=new_data['Campaign Name'][row_num*file_index:row_num*(file_index+1)]+'_'+files[file_index]
+
+        # ad_set name = old ad_set name + creatvie name
+        new_data['Ad Set Name']=new_data['Ad Set Name']+'_'+new_data['Video File Name']
+
+        # ad name = creative name
+        new_data['Ad Name']=new_data['Video File Name']
 
     else:
         # same+image
@@ -132,22 +137,19 @@ if cam_tye=='1':
             
         # Creative Type 赋值
         new_data['Creative Type']='Link Page Post Ad'
-        # 粘贴文本
+
         for file_index in range(len(files)):
+            # creative name 每step行数 = file
             new_data['image'][row_num*file_index:row_num*(file_index+1)]=files[file_index]
-            #广告命名 以原始行数分命名
-            for f_i in range(row_num):
-                ad_sut=1
-                new_data['Ad Name'][file_index*row_num+f_i]=files[file_index]+'_'+str(ad_sut)
-                ad_sut=ad_sut+1
-            #广告组命名 以原始组数分命名    adset_num & ad_num
-            for f_i in range(adset_num):
-                ad_sut=1
-                new_data['Ad Set Name'][f_i*ad_num:(f_i+1)*ad_num]=files[file_index]+'_'+str(ad_sut)
-                ad_sut=ad_sut+1
-            # campaign命名 以行数命名   row_num
-            for f_i in range(row_num):
-                new_data['Campaign Name'][file_index*row_num+f_i] = raw_data['Campaign Name'][0]+'_'+files[file_index]
+
+            # campaign name= oldcampaign name + creatvie name
+            new_data['Campaign Name'][row_num*file_index:row_num*(file_index+1)]=new_data['Campaign Name'][row_num*file_index:row_num*(file_index+1)]+'_'+files[file_index]
+
+        # ad_set name = old ad_set name + creatvie name
+        new_data['Ad Set Name']=new_data['Ad Set Name']+'_'+new_data['image']
+
+        # ad name = creative name
+        new_data['Ad Name']=new_data['image']
         
 else:
     if cre_frmat=='1':
@@ -160,21 +162,21 @@ else:
 
         # Creative Type 赋值
         new_data['Creative Type']='Video Page Post Ad'
-        # 粘贴文本
+
+        # creative name
         new_data['Video File Name'][0:len(files)]=files
-        #广告
+
+        # ad name = creative name
         new_data['Ad Name'][0:len(files)]=files
         #new_data['Ad Set Name'][0:len(files)]=files
         
         # campaign命名 以row_num
         for f_i in range(math.ceil(len(files)/row_num)):
-            ad_sut=1
-            new_data['Campaign Name']=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
-            ad_sut=ad_sut+1
+            new_data['Campaign Name'][f_i*row_num:(f_i+1)*row_num] = raw_data['Campaign Name'][0]+'_'+str(f_i+1)
         
-        # 一个广告组一个广告的时候，广告组赋值=广告name
+        # 一个广告组一个广告的时候，广告组赋值=广告name 其他情况，使用原
         if ad_num==adset_num:
-            new_data['Ad Set Name']=new_data['Ad Name']
+            new_data['Ad Set Name']=new_data['Ad Set Name']+'_'+new_data['Ad Name']
 
         new_data=new_data.head(len(files))
     else:
@@ -196,14 +198,11 @@ else:
 
         # campaign命名 以row_num
         for f_i in range(math.ceil(len(files)/row_num)):
-            ad_sut=1
-            new_data['Campaign Name']=[raw_data['Campaign Name'][0]+'_'+str(ad_sut)]*row_num
-            ad_sut=ad_sut+1
-
-        # 一个广告组一个广告的时候，广告组赋值=广告name
+            new_data['Campaign Name'][f_i*row_num:(f_i+1)*row_num] = raw_data['Campaign Name'][0]+'_'+str(f_i+1)
+        
+        # 一个广告组一个广告的时候，广告组赋值=广告name 其他情况，使用原
         if ad_num==adset_num:
-            new_data['Ad Set Name']=new_data['Ad Name']
-
+            new_data['Ad Set Name']=new_data['Ad Set Name']+'_'+new_data['Ad Name']
 
         new_data=new_data.head(len(files))
 #复制到粘贴板
