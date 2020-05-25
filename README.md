@@ -5,7 +5,16 @@
 ### step 1:
 #### Plase input num:
 #### 1. campaign the same creative       #  解释，一个Campaign无论什么结构，都是一个素材。可能是测不同定向
+#####       Tips:   ad name = creative name, 
+#####               adset name = old adset name + creative name,
+#####               campagin name = old campagin name + creative name 
 #### 2. campaign mix creative            #  解释，一个Campaign是混合素材，素材顺序根据素材命名
+#####    Tips:   ad name = creative name, 
+#####            when one adset hanve one ad:
+#####                adset name = old adset name + creative name,
+#####            other:
+#####                adset name = old adset name
+#####            campagin name = old campagin name + 1,2,3......
 
 
 ### step 2:
