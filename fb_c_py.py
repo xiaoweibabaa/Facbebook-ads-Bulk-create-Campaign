@@ -8,9 +8,9 @@ import time
 import tkinter as tk
 import tkinter.filedialog
 
-import numpy.random.common
-import numpy.random.bounded_integers
-import numpy.random.entropy
+#import numpy.random.common
+#import numpy.random.bounded_integers
+#import numpy.random.entropy
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
